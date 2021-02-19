@@ -4,6 +4,28 @@ version: 2.1
 orbs:
   # Declare a dependency on the welcome-orb
   welcome: circleci/welcome-orb@0.4.1
+# Jobs
+jobs:
+  # This is our first job.
+  print_hello: 
+    # it uses the docker executor
+    docker:
+      - image: circleci/node:13.8.0 # specifically, a docker image with node 13.8.0
+    # Steps are a list of commands to run inside the docker container above.
+    steps:
+      - checkout # this pulls code down from GitHub
+      - run: echo "hello" # This prints "A first hello" to stdout.
+      - run: sleep 25 # a command telling the job to "sleep" for 25 seconds.
+   # This is our second job.
+  print_world: 
+    # it uses the docker executor
+    docker:
+      - image: circleci/node:13.8.0 # specifically, a docker image with node 13.8.0
+    # Steps are a list of commands to run inside the docker container above.
+    steps:
+      - checkout # this pulls code down from GitHub
+      - run: echo "world" # This prints "world" to stdout.
+      - run: sleep 15 # a command telling the job to "sleep" for 25 seconds.
 # Orchestrate or schedule a set of jobs
 workflows:
   # Name the workflow "welcome"
@@ -11,3 +33,10 @@ workflows:
     # Run the welcome/run job in its own container
     jobs:
       - welcome/run
+  # our new workflow
+  hello_world:
+    jobs:
+      - print_hello
+      - print_world:
+          requires:
+            - print_hello
