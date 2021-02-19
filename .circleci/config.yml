@@ -15,7 +15,7 @@ jobs:
     steps:
       - checkout # this pulls code down from GitHub
       - run: echo "hello" # This prints "A first hello" to stdout.
-      - run: sleep 25 # a command telling the job to "sleep" for 25 seconds.
+      - run: sleep 10 # a command telling the job to "sleep" for 25 seconds.
    # This is our second job.
   print_world: 
     # it uses the docker executor
@@ -25,7 +25,15 @@ jobs:
     steps:
       - checkout # this pulls code down from GitHub
       - run: echo "world" # This prints "world" to stdout.
-      - run: sleep 15 # a command telling the job to "sleep" for 25 seconds.
+      - run: sleep 10 # a command telling the job to "sleep" for 25 seconds.
+  name_env_var:
+    docker:
+      - image: alpine:latest
+    steps:
+      - run: 
+          name: "echo an env var that is part of our project"
+          command: |
+            echo $MY_NAME # this env var must be set within the project
 # Orchestrate or schedule a set of jobs
 workflows:
   # Name the workflow "welcome"
@@ -33,10 +41,8 @@ workflows:
     # Run the welcome/run job in its own container
     jobs:
       - welcome/run
-  # our new workflow
-  hello_world:
-    jobs:
       - print_hello
       - print_world:
           requires:
             - print_hello
+      - name_env_var
