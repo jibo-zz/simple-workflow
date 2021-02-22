@@ -7,28 +7,32 @@ orbs:
 # Jobs
 jobs:
   # This is our first job.
-  print_hello: 
+  save_hello_world_output: 
     # it uses the docker executor
     docker:
       - image: circleci/node:13.8.0 # specifically, a docker image with node 13.8.0
     # Steps are a list of commands to run inside the docker container above.
     steps:
       - checkout # this pulls code down from GitHub
-      - run: echo "hello" # This prints "A first hello" to stdout.
-      - run: sleep 10 # a command telling the job to "sleep" for 25 seconds.
+      - run: echo "hello world" > output.txt # This prints "A first hello" to stdout.
+      - persist_to_workspace:
+        root: /tmp/workspace
+        paths:
+          - output.txt
    # This is our second job.
-  print_world: 
+  print_output_fil: 
     # it uses the docker executor
     docker:
       - image: circleci/node:13.8.0 # specifically, a docker image with node 13.8.0
     # Steps are a list of commands to run inside the docker container above.
     steps:
       - checkout # this pulls code down from GitHub
-      - run: echo "world" # This prints "world" to stdout.
-      - run: sleep 10 # a command telling the job to "sleep" for 25 seconds.
+      - attach_workspace:
+          at: /tmp/workspace
+      - run: cat output.txt
   name_env_var:
     docker:
-      - image: cimg/base:2020.01
+      - image: alpine:latest
     steps:
       - checkout
       - run: 
