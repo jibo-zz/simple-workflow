@@ -46,8 +46,8 @@ workflows:
     # Run the welcome/run job in its own container
     jobs:
       - welcome/run
-      - print_hello
-      - print_world:
+      - save_hello_world_output
+      - print_output_fil:
           requires:
-            - print_hello
+            - save_hello_world_output
       - name_env_var
