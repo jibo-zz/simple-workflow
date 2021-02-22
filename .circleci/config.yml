@@ -15,7 +15,6 @@ jobs:
       - image: circleci/node:13.8.0 # specifically, a docker image with node 13.8.0
     # Steps are a list of commands to run inside the docker container above.
     steps:
-      - checkout # this pulls code down from GitHub
       - run: echo "hello world" > ~/output.txt # This prints "A first hello" to stdout.
       - persist_to_workspace:
           root: ~/
@@ -28,11 +27,19 @@ jobs:
       - image: circleci/node:13.8.0 # specifically, a docker image with node 13.8.0
     # Steps are a list of commands to run inside the docker container above.
     steps:
-      - checkout # this pulls code down from GitHub
       - attach_workspace:
           at: ~/
       - run: cat ~/output.txt
   my_job:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - run: return 1
+      - run:
+          name: on error
+          command: echo "Hello Error!"
+          when: on_fail
+  my_job_id:
     docker:
       - image: alpine:latest
     steps:
@@ -48,3 +55,4 @@ workflows:
           requires:
             - save_hello_world_output
       - my_job
+      - my_job_id
